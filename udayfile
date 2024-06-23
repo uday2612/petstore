@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('clone') {
+            steps {
+                git branch: 'master', changelog: false, poll: false, url: 'https://github.com/uday2612/petstore.git'
+            }
+        }
+        stage('build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+        stage('deploye') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'd025b00d-3181-4c67-98bb-b69328540ad6', path: '', url: 'http://3.27.246.28:8080')], contextPath: 'pet', war: '**/*.war'
+            }
+        }
+    }
+}
+
